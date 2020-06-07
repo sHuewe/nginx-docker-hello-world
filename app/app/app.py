@@ -18,10 +18,9 @@ def hello_docker():
     '''
     Returns own instance name and tries to get name from other instance.
     '''
-    data=getData()
-    res= f'Hello from {data.get("name","Name-not-set")}'
-    if "otherInstance" in data.keys():
-        appName = data["otherInstance"]
+    res= f'Hello from {os.environ.get("NAME","Name-not-set")}'
+    appName = os.environ.get("CONNECT_TO")
+    if appName is not None:
         url = appName+":5000/name"
         res += f'<br/> Try to call {url}'
         try:
@@ -37,18 +36,7 @@ def get_name():
     '''
     Gets name of instance
     '''
-    return getData().get("name","")
-
-def getData():
-    '''
-    Returns data from config file
-    '''
-    data={}
-    if os.path.exists("/app-data/config.json"):
-        with open("/app-data/config.json") as jsonfile:
-            data = json.load(jsonfile)
-    return data
-
+    return os.environ.get("NAME","")
  
 if __name__ == "__main__":
     app.run(debug=True,host='0.0.0.0')

@@ -7,16 +7,32 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf
     ports:
       - 80:80
-  #The app instances (same image, different volumes with configs)
+  #The app instances (same image, different environment config)
   app1:
     build: ./app
     image: flask-app
     container_name: app1
-    volumes:
-      - ./app-data-1:/app-data #Contains name=app1 and connection to app2
+    environment:
+      - NAME=Instance1
+      - CONNECT_TO=http://app2 #Should work
   app2:
     build: ./app
     image: flask-app
     container_name: app2
-    volumes:
-      - ./app-data-2:/app-data #Contains name=app2 and connection to app1
+    environment:
+      - NAME=My cool app2
+      - CONNECT_TO=http://app1 #Should work
+  app3:
+    build: ./app
+    image: flask-app
+    container_name: app3
+    environment:
+      - NAME=app3
+      - CONNECT_TO=http://app1 #Should work
+  app4:
+    build: ./app
+    image: flask-app
+    container_name: app4
+    environment:
+      - NAME=app4
+      - CONNECT_TO=http://app1234 #Shouldn't work
